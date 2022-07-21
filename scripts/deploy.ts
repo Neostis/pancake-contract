@@ -24,6 +24,7 @@ async function main() {
   const USDC = await deployToken("USD Coin", "USDC");
   const BUSD = await deployToken("Binance USD", "BUSD");
 
+// Deploy "deploy-factory.ts first"
   // Deploy Factory
   const factory = await deployPancakeFactory();
 
@@ -31,7 +32,7 @@ async function main() {
   const router = await deployPancakeRouter(factory, WETH);
 
   // Run
-  const DEADLINE = parseEther("10000");
+  const DEADLINE = parseEther("10000000000000000");
   const VALUE = parseEther("1000");
   const VALUE_SWAP = parseEther("50");
   const VALUE_SWAP_MIN = parseEther("45");
@@ -42,8 +43,11 @@ async function main() {
   await contractUSDC.mint(owner.address, parseEther("2000"));
   await contractBUSD.mint(owner.address, VALUE);
 
-  await contractUSDC.approve(router, ethers.constants.MaxUint256);
-  await contractBUSD.approve(router, ethers.constants.MaxUint256);
+  // await contractUSDC.approve(router, ethers.constants.MaxUint256);
+  // await contractBUSD.approve(router, ethers.constants.MaxUint256);
+
+  await contractUSDC.approve(router, parseEther("2000"));
+  await contractBUSD.approve(router, VALUE);
 
   console.log("Balance USDC", formatEther(await contractUSDC.balanceOf(owner.address)));
   console.log("Balance BUSD", formatEther(await contractBUSD.balanceOf(owner.address)));

@@ -9,7 +9,7 @@ export async function deployPancakeRouter(factory: string, weth: string) {
   const pancakeRouter = await PancakeRouter.deploy(factory, weth);
 
   await pancakeRouter.deployTransaction.wait();
-
+  
   console.log("PancakeRouter at: ", pancakeRouter.address);
   return pancakeRouter.address;
 }

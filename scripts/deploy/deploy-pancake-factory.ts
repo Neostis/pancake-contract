@@ -9,7 +9,7 @@ export async function deployPancakeFactory() {
   const pancakeFactory = await PancakeFactory.deploy(owner.address);
 
   await pancakeFactory.deployTransaction.wait();
-
+  console.log("INIT_CODE_PAIR_HASH:", await pancakeFactory.INIT_CODE_PAIR_HASH());
   console.log("PancakeFactory at: ", pancakeFactory.address);
   return pancakeFactory.address;
 }
