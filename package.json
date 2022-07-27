@@ -13,6 +13,7 @@
     "@nomiclabs/hardhat-ethers": "^2.0.6",
     "@nomiclabs/hardhat-etherscan": "^3.0.3",
     "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "@openzeppelin/contracts": "^4.2.0",
     "@typechain/ethers-v5": "^7.2.0",
     "@typechain/hardhat": "^2.3.1",
     "@types/chai": "^4.3.1",
@@ -20,6 +21,7 @@
     "@types/node": "^12.20.52",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
+    "@uniswap/lib": "4.0.1-alpha",
     "chai": "^4.3.6",
     "dotenv": "^16.0.1",
     "eslint": "^7.32.0",
@@ -39,8 +41,6 @@
     "solidity-coverage": "^0.7.21",
     "ts-node": "^10.7.0",
     "typechain": "^5.2.0",
-    "typescript": "^4.6.4",
-    "@openzeppelin/contracts": "^4.2.0",
-    "@uniswap/lib": "4.0.1-alpha"
+    "typescript": "^4.6.4"
   }
 }
