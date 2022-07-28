@@ -9,6 +9,7 @@ import { PancakeFactory } from "../typechain";
 import { PancakePair__factory } from "../typechain/factories/PancakePair__factory";
 import { PancakePair } from "../typechain";
 import { BigNumber } from "ethers";
+import { GetARGsTypeFromFactory } from '../typechain/common';
 
 describe("AddLiquidity", function () {
   let owner: SignerWithAddress;
@@ -49,79 +50,84 @@ describe("AddLiquidity", function () {
     const TokenBUSD = (await ethers.getContractFactory("Token")) as Token__factory;
     tokenBUSD = await TokenBUSD.deploy("Binance USD", "BUSD");
 
-    await tokenUSDC.connect(owner).mint(owner.address, ethers.utils.parseEther("600"));
-    await tokenUSDC.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
-    await tokenBUSD.connect(owner).mint(owner.address, ethers.utils.parseEther("300"));
-    await tokenBUSD.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("300"));
+    await tokenUSDC.connect(owner).mint(owner.address, ethers.utils.parseEther("10000"));
+    await tokenUSDC.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("10000"));
+    await tokenBUSD.connect(owner).mint(owner.address, ethers.utils.parseEther("10000"));
+    await tokenBUSD.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("10000"));
 
-    describe("AddLiquidity", function () {
-      it("Should AddLiquidity with tokenA and TokenB", async function () {
+    describe("swapExactTokensForTokens Test 1", function () {
+      it("Should SWap with tokenA and TokenB", async function () {
         console.log("---------------------------------");
 
         const contractRouter = PancakeRouter__factory.connect(pancakeRouter.address, owner) as PancakeRouter;
         const contractFactory = PancakeFactory__factory.connect(pancakeFactory.address, owner) as PancakeFactory;
         await contractRouter.addLiquidity(
-          tokenUSDC.address,
-          tokenBUSD.address,
-          ethers.utils.parseEther("300"),
-          ethers.utils.parseEther("100"),
-          0,
-          0,
-          owner.address,
-          100000000000
-        );
-
-        const getPairAdd = await contractFactory.getPair(tokenUSDC.address, tokenBUSD.address);
-        // console.log("getPairAdd1", await contractFactory.getPair(tokenUSDC.address, tokenBUSD.address));
-        // console.log("getPairAdd2", getPairAdd);
-
-        // console.log("getAllPairAdd",await contractFactory.allPairs(0));
-        expect(await contractFactory.allPairs(0)).to.equal(
-          await contractFactory.getPair(tokenUSDC.address, tokenBUSD.address)
-        );
-
-        const contractPair = PancakePair__factory.connect(getPairAdd, owner) as PancakePair;
-        const opReserves = await contractPair.getReserves();
-        console.log(ethers.utils.formatEther(opReserves._reserve0));
-        console.log(ethers.utils.formatEther(opReserves._reserve1));
-        console.log(ethers.utils.formatEther(await contractPair.balanceOf(owner.address)));
-      });
-      it("Should AddLiquidity 2 with tokenA and TokenB", async function () {
-        console.log("---------------------------------");
-
-        const contractRouter = PancakeRouter__factory.connect(pancakeRouter.address, owner) as PancakeRouter;
-        const contractFactory = PancakeFactory__factory.connect(pancakeFactory.address, owner) as PancakeFactory;
-        try {
-          await contractRouter.addLiquidity(
             tokenUSDC.address,
             tokenBUSD.address,
-            ethers.utils.parseEther("65"),
-            ethers.utils.parseEther("25"),
+            ethers.utils.parseEther("300"),
+            ethers.utils.parseEther("100"),
             0,
             0,
             owner.address,
             100000000000
           );
+        
+        await tokenUSDC.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
+        await tokenBUSD.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
 
-          const getPairAdd = await contractFactory.getPair(tokenUSDC.address, tokenBUSD.address);
+        await contractRouter.swapExactTokensForTokens(
+          ethers.utils.parseEther("600"),
+          ethers.utils.parseEther("0"),
+          [tokenBUSD.address, tokenUSDC.address],
+          owner.address,
+          100000000000
+        );
 
-          expect(await contractFactory.allPairs(0)).to.equal(
-            await contractFactory.getPair(tokenUSDC.address, tokenBUSD.address)
-          );
-          const contractPair = PancakePair__factory.connect(getPairAdd, owner) as PancakePair;
-          const opReserves = await contractPair.getReserves();
-          console.log(ethers.utils.formatEther(opReserves._reserve0));
-          console.log(ethers.utils.formatEther(opReserves._reserve1));
-          console.log(ethers.utils.formatEther(await contractPair.balanceOf(owner.address)));
-        } catch (UNPREDICTABLE_GAS_LIMIT) {
-          console.log("error");
-        }
+        // const getPairAdd = await contractFactory.getPair(tokenUSDC.address, tokenBUSD.address);
+        // expect(await contractFactory.allPairs(0)).to.equal(
+        //   await contractFactory.getPair(tokenUSDC.address, tokenBUSD.address)
+        // );
+
+        // const contractPair = PancakePair__factory.connect(getPairAdd, owner) as PancakePair;
+        // const opReserves = await contractPair.getReserves();
+        // console.log(ethers.utils.formatEther(opReserves._reserve0));
+        // console.log(ethers.utils.formatEther(opReserves._reserve1));
+        // console.log(ethers.utils.formatEther(await contractPair.balanceOf(owner.address)));
       });
     });
+
+    describe("swapTokensForExactTokens Test 2", function () {
+        it("Should SWap with tokenA and TokenB", async function () {
+          console.log("---------------------------------");
+  
+          const contractRouter = PancakeRouter__factory.connect(pancakeRouter.address, owner) as PancakeRouter;
+          const contractFactory = PancakeFactory__factory.connect(pancakeFactory.address, owner) as PancakeFactory;
+          await contractRouter.addLiquidity(
+              tokenUSDC.address,
+              tokenBUSD.address,
+              ethers.utils.parseEther("300"),
+              ethers.utils.parseEther("100"),
+              0,
+              0,
+              owner.address,
+              100000000000
+            );
+          
+          await tokenUSDC.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
+          await tokenBUSD.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
+  
+          await contractRouter.swapTokensForExactTokens(
+            ethers.utils.parseEther("200"),
+            ethers.utils.parseEther("400"),
+            [tokenBUSD.address, tokenUSDC.address],
+            owner.address,
+            100000000000
+          );
+        });
+      });
   });
 
   it("Should ", async function () {
-    console.log("sssss")
     // const Greeter = await ethers.getContractFactory("Greeter");
     // const greeter = await Greeter.deploy("Hello, world!");
     // await greeter.deployed();
@@ -133,6 +139,3 @@ describe("AddLiquidity", function () {
   });
 });
 
-
-
-        // describe("AddLiquidity2", function () {
