@@ -24,12 +24,12 @@ async function main() {
   const USDC = await deployToken("USD Coin", "USDC");
   const BUSD = await deployToken("Binance USD", "BUSD");
 
-// Deploy "deploy-factory.ts first"
+  // Deploy "deploy-factory.ts first"
   // Deploy Factory
   const factory = await deployPancakeFactory();
 
   // Deploy Router
-  const router = await deployPancakeRouter(factory, WETH);
+  const router = await deployPancakeRouter(factory, "0xc778417E063141139Fce010982780140Aa0cD5Ab");
 
   // Run
   const DEADLINE = parseEther("10000000000000000");

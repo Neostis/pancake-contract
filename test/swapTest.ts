@@ -9,7 +9,7 @@ import { PancakeFactory } from "../typechain";
 import { PancakePair__factory } from "../typechain/factories/PancakePair__factory";
 import { PancakePair } from "../typechain";
 import { BigNumber } from "ethers";
-import { GetARGsTypeFromFactory } from '../typechain/common';
+import { GetARGsTypeFromFactory } from "../typechain/common";
 
 describe("AddLiquidity", function () {
   let owner: SignerWithAddress;
@@ -19,8 +19,7 @@ describe("AddLiquidity", function () {
   let tokenWETH: any;
   let PancakeRouter: PancakeRouter__factory;
   let pancakeRouter: any;
-  let tokenUSDC: any;
-  let tokenBUSD: any;
+  let tokenA, tokenB, tokenC, tokenD: any;
   beforeEach(async function () {
     [owner, wallet1] = await ethers.getSigners();
     console.log("owner Address:", owner.address);
@@ -45,86 +44,89 @@ describe("AddLiquidity", function () {
     console.log("pancakeRouter factory:", await pancakeRouter.factory());
     console.log("pancakeRouter WETH:", await pancakeRouter.WETH());
 
-    const TokenUSDC = (await ethers.getContractFactory("Token")) as Token__factory;
-    tokenUSDC = await TokenUSDC.deploy("USD Coin", "USDC");
-    const TokenBUSD = (await ethers.getContractFactory("Token")) as Token__factory;
-    tokenBUSD = await TokenBUSD.deploy("Binance USD", "BUSD");
+    const TokenA = (await ethers.getContractFactory("Token")) as Token__factory;
+    tokenA = await TokenA.deploy("A Coin", "AC");
 
-    await tokenUSDC.connect(owner).mint(owner.address, ethers.utils.parseEther("10000"));
-    await tokenUSDC.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("10000"));
-    await tokenBUSD.connect(owner).mint(owner.address, ethers.utils.parseEther("10000"));
-    await tokenBUSD.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("10000"));
+    const TokenB = (await ethers.getContractFactory("Token")) as Token__factory;
+    tokenB = await TokenB.deploy("B Coin", "BC");
+
+    const TokenC = (await ethers.getContractFactory("Token")) as Token__factory;
+    tokenC = await TokenC.deploy("C Coin", "CC");
+
+    const TokenD = (await ethers.getContractFactory("Token")) as Token__factory;
+    tokenD = await TokenD.deploy("D Coin", "DC");
+
+    // await tokenA.connect(owner).mint(owner.address, ethers.utils.parseEther("10000"));
+    // await tokenA.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("10000"));
+    // await tokenB.connect(owner).mint(owner.address, ethers.utils.parseEther("10000"));
+    // await tokenB.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("10000"));
 
     describe("swapExactTokensForTokens Test 1", function () {
-      it("Should SWap with tokenA and TokenB", async function () {
-        console.log("---------------------------------");
-
-        const contractRouter = PancakeRouter__factory.connect(pancakeRouter.address, owner) as PancakeRouter;
-        const contractFactory = PancakeFactory__factory.connect(pancakeFactory.address, owner) as PancakeFactory;
-        await contractRouter.addLiquidity(
-            tokenUSDC.address,
-            tokenBUSD.address,
-            ethers.utils.parseEther("300"),
-            ethers.utils.parseEther("100"),
-            0,
-            0,
-            owner.address,
-            100000000000
-          );
-        
-        await tokenUSDC.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
-        await tokenBUSD.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
-
-        await contractRouter.swapExactTokensForTokens(
-          ethers.utils.parseEther("600"),
-          ethers.utils.parseEther("0"),
-          [tokenBUSD.address, tokenUSDC.address],
-          owner.address,
-          100000000000
-        );
-
-        // const getPairAdd = await contractFactory.getPair(tokenUSDC.address, tokenBUSD.address);
-        // expect(await contractFactory.allPairs(0)).to.equal(
-        //   await contractFactory.getPair(tokenUSDC.address, tokenBUSD.address)
-        // );
-
-        // const contractPair = PancakePair__factory.connect(getPairAdd, owner) as PancakePair;
-        // const opReserves = await contractPair.getReserves();
-        // console.log(ethers.utils.formatEther(opReserves._reserve0));
-        // console.log(ethers.utils.formatEther(opReserves._reserve1));
-        // console.log(ethers.utils.formatEther(await contractPair.balanceOf(owner.address)));
-      });
+      // it("Should SWap with TokenA and TokenB", async function () {
+      //   console.log("---------------------------------");
+      //   const contractRouter = PancakeRouter__factory.connect(pancakeRouter.address, owner) as PancakeRouter;
+      //   const contractFactory = PancakeFactory__factory.connect(pancakeFactory.address, owner) as PancakeFactory;
+      //   await contractRouter.addLiquidity(
+      //     TokenA.address,
+      //     TokenB.address,
+      //     ethers.utils.parseEther("300"),
+      //     ethers.utils.parseEther("100"),
+      //     0,
+      //     0,
+      //     owner.address,
+      //     100000000000
+      //   );
+      //   await TokenA.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
+      //   await TokenB.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
+      //   await contractRouter.swapExactTokensForTokens(
+      //     ethers.utils.parseEther("600"),
+      //     ethers.utils.parseEther("0"),
+      //     [TokenB.address, TokenA.address],
+      //     owner.address,
+      //     100000000000
+      //   );
+      //   // const getPairAdd = await contractFactory.getPair(TokenA.address, TokenB.address);
+      //   // expect(await contractFactory.allPairs(0)).to.equal(
+      //   //   await contractFactory.getPair(TokenA.address, TokenB.address)
+      //   // );
+      //   // const contractPair = PancakePair__factory.connect(getPairAdd, owner) as PancakePair;
+      //   // const opReserves = await contractPair.getReserves();
+      //   // console.log(ethers.utils.formatEther(opReserves._reserve0));
+      //   // console.log(ethers.utils.formatEther(opReserves._reserve1));
+      //   // console.log(ethers.utils.formatEther(await contractPair.balanceOf(owner.address)));
+      // });
     });
 
-    describe("swapTokensForExactTokens Test 2", function () {
-        it("Should SWap with tokenA and TokenB", async function () {
-          console.log("---------------------------------");
-  
-          const contractRouter = PancakeRouter__factory.connect(pancakeRouter.address, owner) as PancakeRouter;
-          const contractFactory = PancakeFactory__factory.connect(pancakeFactory.address, owner) as PancakeFactory;
-          await contractRouter.addLiquidity(
-              tokenUSDC.address,
-              tokenBUSD.address,
-              ethers.utils.parseEther("300"),
-              ethers.utils.parseEther("100"),
-              0,
-              0,
-              owner.address,
-              100000000000
-            );
-          
-          await tokenUSDC.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
-          await tokenBUSD.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
-  
-          await contractRouter.swapTokensForExactTokens(
-            ethers.utils.parseEther("200"),
-            ethers.utils.parseEther("400"),
-            [tokenBUSD.address, tokenUSDC.address],
-            owner.address,
-            100000000000
-          );
-        });
-      });
+    // describe("swapTokensForExactTokens Test 2", function () {
+    //   it("Should SWap with TokenA and TokenB", async function () {
+    //     console.log("---------------------------------");
+
+    //     const contractRouter = PancakeRouter__factory.connect(pancakeRouter.address, owner) as PancakeRouter;
+    //     const contractFactory = PancakeFactory__factory.connect(pancakeFactory.address, owner) as PancakeFactory;
+    //     await contractRouter.addLiquidity(
+    //       TokenA.address,
+    //       TokenB.address,
+    //       ethers.utils.parseEther("500"),
+    //       ethers.utils.parseEther("500"),
+    //       0,
+    //       0,
+    //       owner.address,
+    //       100000000000
+    //     );
+    //     DataTransfer;
+
+    //     // await TokenA.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
+    //     // await TokenB.connect(owner).approve(pancakeRouter.address, ethers.utils.parseEther("600"));
+
+    //     // await contractRouter.swapExactTokensForTokens(
+    //     //   ethers.utils.parseEther("200"),
+    //     //   0,
+    //     //   [TokenB.address, TokenA.address],
+    //     //   owner.address,
+    //     //   100000000000
+    //     // );
+    //   });
+    // });
   });
 
   it("Should ", async function () {
@@ -138,4 +140,3 @@ describe("AddLiquidity", function () {
     // expect(await greeter.greet()).to.equal("Hola, mundo!");
   });
 });
-

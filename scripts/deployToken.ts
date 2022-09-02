@@ -17,18 +17,21 @@ const { formatEther, parseEther } = ethers.utils;
 async function main() {
   const [owner] = await hre.ethers.getSigners();
 
-
-  const XC = await deployToken("X Coin", "XC");
-
-  const contractXc = Token__factory.connect(XC, owner) as Token;
-
-
-  await contractXc.mint(owner.address, parseEther("2000"));
-
-//   await contractXc.approve(router, parseEther("2000"));
+  // const AC = await deployToken("A Coin", "AC");
+  // const BC = await deployToken("B Coin", "BC");
+  // const CC = await deployToken("C Coin", "CC");
+  // const DC = await deployToken("D Coin", "DC");
+  const EC = await deployToken("E Coin", "EC");
 
 
+  // const contractAc = Token__factory.connect(AC, owner) as Token;
+  // const contractBc = Token__factory.connect(BC, owner) as Token;
+  // const contractCc = Token__factory.connect(CC, owner) as Token;
+  const contractEc = Token__factory.connect(EC, owner) as Token;
 
+  // await contractAc.mint(owner.address, parseEther("2000"));
+  /* Connecting to the contract and casting it to the type `Token` */
+  // await contractBc.mint(owner.address, parseEther("2000"));
 }
 
 main().catch((error) => {
